@@ -109,12 +109,6 @@
 
 🤖 AI Insights - Personalized financial advice and Q&A
 
-🔧 Troubleshooting
-Issue,Solution
-"""PDF processing failed""",Ensure Poppler is installed and in PATH
-"""API key error""",Check .streamlit/secrets.toml file
-"""Slow processing""",Reduce PDF DPI or split large statements
-"""No transactions found""",Ensure PDF has clear text/table format
 
 🎥 Demo Screenshots
 
@@ -125,4 +119,23 @@ Issue,Solution
 <img width="1820" height="965" alt="AI Based Insights and Recommendations" src="https://github.com/user-attachments/assets/b7130c64-f92a-4e1b-a441-f48f20effd91" />
 <img width="1660" height="828" alt="AI based Budget Plan" src="https://github.com/user-attachments/assets/ea7c07a3-437d-4f67-a563-70144a2defb5" />
 
+## 🔧 Troubleshooting
 
+| Issue | Solution |
+|-------|----------|
+| **PDF processing failed** | Ensure Poppler is installed and in PATH |
+| **API key error** | Check `.streamlit/secrets.toml` file exists and contains valid HuggingFace API key |
+| **Slow processing** | Reduce PDF DPI in code or split large statements into smaller files |
+| **No transactions found** | Ensure PDF has clear text/table format, try higher DPI setting |
+| **Memory error** | Reduce batch size in categorization settings |
+| **Model timeout** | Increase timeout duration in configuration |
+| **Incorrect categorization** | Review confidence scores, manually adjust in Transaction Details tab |
+| **Streamlit connection issues** | Restart Streamlit server, check network connection |
+| **Plotly charts not displaying** | Update Plotly and Streamlit to latest versions |
+| **Import errors** | Verify all dependencies in requirements.txt are installed |
+| **File upload issues** | Check file size (max 200MB recommended), ensure PDF is not password protected |
+| **AI insights not generating** | Verify HuggingFace API key has access to required models |
+| **Export/download problems** | Check browser permissions, try different browser |
+| **Filter not working** | Clear browser cache, refresh the page |
+| **Date parsing errors** | Ensure date format in PDF matches expected format |
+| **Balance calculation issues** | Verify balance column exists in extracted data |

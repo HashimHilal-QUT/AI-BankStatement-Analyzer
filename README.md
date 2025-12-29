@@ -110,14 +110,15 @@
 🤖 AI Insights - Personalized financial advice and Q&A
 
 
-🎥 Demo Screenshots
 
-<img width="1914" height="1034" alt="FirstPage" src="https://github.com/user-attachments/assets/628772b1-2d52-4233-930b-15f27998ad93" />
-<img width="1504" height="964" alt="Time Analysis" src="https://github.com/user-attachments/assets/918e91ed-00dc-4e05-88be-117c30bf1998" />
-<img width="1913" height="1024" alt="Spend Analysis" src="https://github.com/user-attachments/assets/c31c433e-03ea-4ab0-a886-f3331bb8e96c" />
-<img width="1575" height="980" alt="Category Breakdown" src="https://github.com/user-attachments/assets/ea549e4c-9e5b-4563-aa1c-9d2114bb5952" />
-<img width="1820" height="965" alt="AI Based Insights and Recommendations" src="https://github.com/user-attachments/assets/b7130c64-f92a-4e1b-a441-f48f20effd91" />
-<img width="1660" height="828" alt="AI based Budget Plan" src="https://github.com/user-attachments/assets/ea7c07a3-437d-4f67-a563-70144a2defb5" />
+### 🎥 Demo Screenshots
+
+<img width="1900" height="1000" alt="FirstPage" src="https://github.com/user-attachments/assets/628772b1-2d52-4233-930b-15f27998ad93" />
+<img width="1900" height="1000" alt="Time Analysis" src="https://github.com/user-attachments/assets/918e91ed-00dc-4e05-88be-117c30bf1998" />
+<img width="1900" height="1000" alt="Spend Analysis" src="https://github.com/user-attachments/assets/c31c433e-03ea-4ab0-a886-f3331bb8e96c" />
+<img width="1900" height="1000" alt="Category Breakdown" src="https://github.com/user-attachments/assets/ea549e4c-9e5b-4563-aa1c-9d2114bb5952" />
+<img width="1900" height="1000" alt="AI Based Insights and Recommendations" src="https://github.com/user-attachments/assets/b7130c64-f92a-4e1b-a441-f48f20effd91" />
+<img width="1900" height="1000" alt="AI based Budget Plan" src="https://github.com/user-attachments/assets/ea7c07a3-437d-4f67-a563-70144a2defb5" />
 
 ## 🔧 Troubleshooting
 

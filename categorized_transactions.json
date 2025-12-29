@@ -1,0 +1,740 @@
+[
+    {
+        "date":"28 Nov 25",
+        "description\/particulars":"V0103 26\/11 COCACOLA EPP MORNINGSID 74564725331",
+        "debit":"$4.60",
+        "credit":"",
+        "balance":"$3,214.11 CR",
+        "category":"Food & Dining",
+        "category_confidence":"high"
+    },
+    {
+        "date":"01 Dec 25",
+        "description\/particulars":"V0103 26\/11 MORNINGSIDE STATION MORNINGSID 74940525331",
+        "debit":"$5.00",
+        "credit":"",
+        "balance":"$8,457.39 CR",
+        "category":"Food & Dining",
+        "category_confidence":"medium"
+    },
+    {
+        "date":"28 Nov 25",
+        "description\/particulars":"V0103 27\/11 ALTOGETHER SOLNS NUNDAH 01084046381",
+        "debit":"$209.11",
+        "credit":"",
+        "balance":"$2,968.01 CR",
+        "category":"Groceries & Supermarkets",
+        "category_confidence":"high"
+    },
+    {
+        "date":"28 Nov 25",
+        "description\/particulars":"EFTPOS 28\/11 12:33 BRISBANE CBD MUSLIMSEIGHT MILE PL",
+        "debit":"$10.00",
+        "credit":"",
+        "balance":"$3,204.11 CR",
+        "category":"Food & Dining",
+        "category_confidence":"high"
+    },
+    {
+        "date":"28 Nov 25",
+        "description\/particulars":"EFTPOS 28\/11 09:04 TERRYWHITE CHEMMART SHOP T26 VALLEY METRO",
+        "debit":"$26.99",
+        "credit":"",
+        "balance":"$3,177.12 CR",
+        "category":"Healthcare & Pharmacy",
+        "category_confidence":"high"
+    },
+    {
+        "date":"01 Dec 25",
+        "description\/particulars":"V0103 28\/11 VALLEY METRO NEWS FORTITUDE 74940525332",
+        "debit":"$4.55",
+        "credit":"",
+        "balance":"$8,467.39 CR",
+        "category":"Groceries & Supermarkets",
+        "category_confidence":"high"
+    },
+    {
+        "date":"01 Dec 25",
+        "description\/particulars":"V0103 29\/11 TRANSLINK CENTRAL ST BRISBANE 74940525334",
+        "debit":"$5.00",
+        "credit":"",
+        "balance":"$8,462.39 CR",
+        "category":"Fuel & Transport",
+        "category_confidence":"high"
+    },
+    {
+        "date":"01 Dec 25",
+        "description\/particulars":"V0103 29\/11 TRANSLINK CENTRAL ST BRISBANE 74940525334",
+        "debit":"$10.00",
+        "credit":"",
+        "balance":"$8,447.39 CR",
+        "category":"Fuel & Transport",
+        "category_confidence":"high"
+    },
+    {
+        "date":"01 Dec 25",
+        "description\/particulars":"V0103 29\/11 TRANSLINK CENTRAL ST BRISBANE 74940525334",
+        "debit":"$10.00",
+        "credit":"",
+        "balance":"$8,437.39 CR",
+        "category":"Fuel & Transport",
+        "category_confidence":"high"
+    },
+    {
+        "date":"01 Dec 25",
+        "description\/particulars":"V0103 29\/11 TRANSLINK CENTRAL ST BRISBANE 74940525334",
+        "debit":"$10.00",
+        "credit":"",
+        "balance":"$8,427.39 CR",
+        "category":"Fuel & Transport",
+        "category_confidence":"high"
+    },
+    {
+        "date":"01 Dec 25",
+        "description\/particulars":"V0103 29\/11 WOOLWORTHS\/IPSWICH RD BURANDA 74278245333",
+        "debit":"$12.10",
+        "credit":"",
+        "balance":"$8,415.29 CR",
+        "category":"Groceries & Supermarkets",
+        "category_confidence":"high"
+    },
+    {
+        "date":"01 Dec 25",
+        "description\/particulars":"EFTPOS 29\/11 13:31 COCO SANNERLEY L0983ANNERLEY QLD",
+        "debit":"$98.14",
+        "credit":"",
+        "balance":"$8,317.15 CR",
+        "category":"Food & Dining",
+        "category_confidence":"high"
+    },
+    {
+        "date":"01 Dec 25",
+        "description\/particulars":"EFTPOS 29\/11 12:58ZLR*PA HALAL BUTCHERLOONGABBA",
+        "debit":"$125.03",
+        "credit":"",
+        "balance":"$8,192.12 CR",
+        "category":"Food & Dining",
+        "category_confidence":"high"
+    },
+    {
+        "date":"02 Dec 25",
+        "description\/particulars":"V0103 29\/11 MCDONALDS CENTRAL BRISBANE C74564725335",
+        "debit":"$4.40",
+        "credit":"",
+        "balance":"$6,034.19 CR",
+        "category":"Food & Dining",
+        "category_confidence":"high"
+    },
+    {
+        "date":"01 Dec 25",
+        "description\/particulars":"EFTPOS 30\/11 16:19 AUSTRALIAN VENDING C21 SILICON PL",
+        "debit":"$3.50",
+        "credit":"",
+        "balance":"$8,471.94 CR",
+        "category":"Food & Dining",
+        "category_confidence":"high"
+    },
+    {
+        "date":"02 Dec 25",
+        "description\/particulars":"V0103 30\/11 7-ELEVEN KELVIN GROVE KELVIN GRO74773885334",
+        "debit":"$4.50",
+        "credit":"",
+        "balance":"$6,029.69 CR",
+        "category":"Food & Dining",
+        "category_confidence":"high"
+    },
+    {
+        "date":"02 Dec 25",
+        "description\/particulars":"V0103 30\/11 AMAZON MARKETPLACE AU SYDNEY74201335334",
+        "debit":"$18.99",
+        "credit":"",
+        "balance":"$6,010.70 CR",
+        "category":"Shopping & Retail",
+        "category_confidence":"high"
+    },
+    {
+        "date":"02 Dec 25",
+        "description\/particulars":"V0103 30\/11 AMAZON MARKETPLACE AU SYDNEY74201335334",
+        "debit":"$25.58",
+        "credit":"",
+        "balance":"$5,985.12 CR",
+        "category":"Shopping & Retail",
+        "category_confidence":"high"
+    },
+    {
+        "date":"01 Dec 25",
+        "description\/particulars":"HASHIM HILAL DECEMBER",
+        "debit":"",
+        "credit":"$4,657.43",
+        "balance":"$7,625.44 CR",
+        "category":"Charity & Donations",
+        "category_confidence":"high"
+    },
+    {
+        "date":"01 Dec 25",
+        "description\/particulars":"ONLINE H7138122260 ZAKAT HILAL H",
+        "debit":"",
+        "credit":"$850.00",
+        "balance":"$8,475.44 CR",
+        "category":"Charity & Donations",
+        "category_confidence":"high"
+    },
+    {
+        "date":"01 Dec 25",
+        "description\/particulars":"AMMATULLAH ABBASI Q0365562860 SPOUSE",
+        "debit":"$167.54",
+        "credit":"",
+        "balance":"$8,024.58 CR",
+        "category":"Transfers & Payments",
+        "category_confidence":"high"
+    },
+    {
+        "date":"01 Dec 25",
+        "description\/particulars":"EFTPOS 01\/12 04:34WU 0723017339\\",
+        "debit":"$331.99",
+        "credit":"",
+        "balance":"$7,692.59 CR",
+        "category":"Groceries & Supermarkets",
+        "category_confidence":"medium"
+    },
+    {
+        "date":"01 Dec 25",
+        "description\/particulars":"EFTPOS 01\/12 04:36WU 9484961551\\",
+        "debit":"$354.00",
+        "credit":"",
+        "balance":"$7,338.59 CR",
+        "category":"Groceries & Supermarkets",
+        "category_confidence":"medium"
+    },
+    {
+        "date":"01 Dec 25",
+        "description\/particulars":"EFTPOS 01\/12 04:38WU 6314233728\\",
+        "debit":"$500.00",
+        "credit":"",
+        "balance":"$6,838.59 CR",
+        "category":"Groceries & Supermarkets",
+        "category_confidence":"medium"
+    },
+    {
+        "date":"01 Dec 25",
+        "description\/particulars":"H HILAL AND A A ABBA A9765646660 GROCERY DECEMBER",
+        "debit":"$800.00",
+        "credit":"",
+        "balance":"$6,038.59 CR",
+        "category":"Groceries & Supermarkets",
+        "category_confidence":"high"
+    },
+    {
+        "date":"03 Dec 25",
+        "description\/particulars":"V0103 01\/12 MCDONALDS CENTRAL BRISBANE C74564725336",
+        "debit":"$14.00",
+        "credit":"",
+        "balance":"$5,971.12 CR",
+        "category":"Food & Dining",
+        "category_confidence":"high"
+    },
+    {
+        "date":"04 Dec 25",
+        "description\/particulars":"V0103 02\/12 7-ELEVEN 4126 SPRING HIL 74564455337",
+        "debit":"$6.50",
+        "credit":"",
+        "balance":"$10,905.72 CR",
+        "category":"Food & Dining",
+        "category_confidence":"high"
+    },
+    {
+        "date":"04 Dec 25",
+        "description\/particulars":"EFTPOS 03\/12 21:25 AUSTRALIAN VENDING C21 SILICON PL",
+        "debit":"$3.50",
+        "credit":"",
+        "balance":"$10,921.62 CR",
+        "category":"Food & Dining",
+        "category_confidence":"high"
+    },
+    {
+        "date":"04 Dec 25",
+        "description\/particulars":"EFTPOS 03\/12 21:25 AUSTRALIAN VENDING C21 SILICON PL",
+        "debit":"$4.70",
+        "credit":"",
+        "balance":"$10,916.92 CR",
+        "category":"Food & Dining",
+        "category_confidence":"high"
+    },
+    {
+        "date":"04 Dec 25",
+        "description\/particulars":"V0103 03\/12 WW METRO\/255 ANN STREET BRISBANE74278245337",
+        "debit":"$4.70",
+        "credit":"",
+        "balance":"$10,912.22 CR",
+        "category":"Groceries & Supermarkets",
+        "category_confidence":"high"
+    },
+    {
+        "date":"04 Dec 25",
+        "description\/particulars":"HASHIM HILA L SEMESTER FEES",
+        "debit":"",
+        "credit":"$4,954.00",
+        "balance":"$10,925.12 CR",
+        "category":"Education",
+        "category_confidence":"high"
+    },
+    {
+        "date":"05 Dec 25",
+        "description\/particulars":"V0103 04\/12 7-ELEVEN 4126 SPRING HIL 74564455338",
+        "debit":"$12.75",
+        "credit":"",
+        "balance":"$10,882.97 CR",
+        "category":"Food & Dining",
+        "category_confidence":"medium"
+    },
+    {
+        "date":"05 Dec 25",
+        "description\/particulars":"V0103 04\/12 MICROSOFT*MICROSOFT 365FMSBILL.INF74773885337",
+        "debit":"$179.00",
+        "credit":"",
+        "balance":"$10,703.97 CR",
+        "category":"Subscriptions",
+        "category_confidence":"high"
+    },
+    {
+        "date":"05 Dec 25",
+        "description\/particulars":"V0103 04\/12 QUT FINANCE OPS KELVIN GRO00798285321",
+        "debit":"$4,975.80",
+        "credit":"",
+        "balance":"$5,728.17 CR",
+        "category":"Education",
+        "category_confidence":"high"
+    },
+    {
+        "date":"05 Dec 25",
+        "description\/particulars":"ISLAMIC SOCIETY OF WX3140452856 ZAKAT",
+        "debit":"",
+        "credit":"$10.00",
+        "balance":"$10,915.72 CR",
+        "category":"Charity & Donations",
+        "category_confidence":"high"
+    },
+    {
+        "date":"05 Dec 25",
+        "description\/particulars":"ISLAMIC SOCIETY OF WX3140452856 ZAKAT",
+        "debit":"",
+        "credit":"$10.00",
+        "balance":"$10,905.72 CR",
+        "category":"Charity & Donations",
+        "category_confidence":"high"
+    },
+    {
+        "date":"05 Dec 25",
+        "description\/particulars":"BRISBANE CBD MUSLIM D2171606232 CHARITY",
+        "debit":"",
+        "credit":"$10.00",
+        "balance":"$10,895.72 CR",
+        "category":"Charity & Donations",
+        "category_confidence":"high"
+    },
+    {
+        "date":"08 Dec 25",
+        "description\/particulars":"V0103 05\/12 COLES 4564 BRISBANE 74363965339",
+        "debit":"$2.80",
+        "credit":"",
+        "balance":"$5,725.37 CR",
+        "category":"Groceries & Supermarkets",
+        "category_confidence":"high"
+    },
+    {
+        "date":"08 Dec 25",
+        "description\/particulars":"V0103 05\/12 DAVIDSNOODLE MYER BRISBANE74249235339",
+        "debit":"$22.14",
+        "credit":"",
+        "balance":"$5,671.18 CR",
+        "category":"Food & Dining",
+        "category_confidence":"high"
+    },
+    {
+        "date":"08 Dec 25",
+        "description\/particulars":"V0103 06\/12 SAFFRONY SIGNATURE KELVIN GRO74249235340",
+        "debit":"$3.00",
+        "credit":"",
+        "balance":"$5,722.37 CR",
+        "category":"Food & Dining",
+        "category_confidence":"high"
+    },
+    {
+        "date":"08 Dec 25",
+        "description\/particulars":"EFTPOS 06\/12 19:04 AUSTRALIAN VENDING C21 SILICON PL",
+        "debit":"$3.50",
+        "credit":"",
+        "balance":"$5,715.82 CR",
+        "category":"Food & Dining",
+        "category_confidence":"medium"
+    },
+    {
+        "date":"08 Dec 25",
+        "description\/particulars":"EFTPOS 06\/12 19:05 AUSTRALIAN VENDING C21 SILICON PL",
+        "debit":"$3.50",
+        "credit":"",
+        "balance":"$5,712.32 CR",
+        "category":"Food & Dining",
+        "category_confidence":"medium"
+    },
+    {
+        "date":"08 Dec 25",
+        "description\/particulars":"V0103 06\/12 SAFFRONY SIGNATURE KELVIN GRO 74249235340",
+        "debit":"$4.00",
+        "credit":"",
+        "balance":"$5,708.32 CR",
+        "category":"Food & Dining",
+        "category_confidence":"high"
+    },
+    {
+        "date":"08 Dec 25",
+        "description\/particulars":"V0103 06\/12 AMAYSIM MOBILE PTY LTD SYDNEY 74201335340",
+        "debit":"$15.00",
+        "credit":"",
+        "balance":"$5,693.32 CR",
+        "category":"Utilities & Bills",
+        "category_confidence":"high"
+    },
+    {
+        "date":"09 Dec 25",
+        "description\/particulars":"V0103 06\/12 TRANSLINK BRISBANE 74940525341",
+        "debit":"$5.00",
+        "credit":"",
+        "balance":"$5,623.68 CR",
+        "category":"Fuel & Transport",
+        "category_confidence":"high"
+    },
+    {
+        "date":"09 Dec 25",
+        "description\/particulars":"V0103 06\/12 AMAZON MARKETPLACE AU SYDNEY 74201335342",
+        "debit":"$20.10",
+        "credit":"",
+        "balance":"$5,583.63 CR",
+        "category":"Shopping & Retail",
+        "category_confidence":"high"
+    },
+    {
+        "date":"08 Dec 25",
+        "description\/particulars":"EFTPOS 07\/12 21:11 SWISS DEBOSSE LAGE PT FORTITUDE VAL",
+        "debit":"$3.05",
+        "credit":"",
+        "balance":"$5,719.32 CR",
+        "category":"Food & Dining",
+        "category_confidence":"medium"
+    },
+    {
+        "date":"08 Dec 25",
+        "description\/particulars":"NABATM CSH 07TH 11:58 BRISBANE",
+        "debit":"$40.00",
+        "credit":"",
+        "balance":"$5,631.18 CR",
+        "category":"Cash Withdrawal",
+        "category_confidence":"high"
+    },
+    {
+        "date":"09 Dec 25",
+        "description\/particulars":"V0103 08\/12 BIG W\/QUEEN&EDWARD&ELIZ BRISBANE 74278245342",
+        "debit":"$2.50",
+        "credit":"",
+        "balance":"$5,628.68 CR",
+        "category":"Shopping & Retail",
+        "category_confidence":"high"
+    },
+    {
+        "date":"10 Dec 25",
+        "description\/particulars":"V0103 08\/12 UDEMY +905326253 74987505342",
+        "debit":"$35.98",
+        "credit":"",
+        "balance":"$10,249.54 CR",
+        "category":"Education",
+        "category_confidence":"high"
+    },
+    {
+        "date":"11 Dec 25",
+        "description\/particulars":"V0103 08\/12 INTL TXN FEE-SC 74987505342",
+        "debit":"$1.26",
+        "credit":"",
+        "balance":"$10,248.28 CR",
+        "category":"Financial Services",
+        "category_confidence":"medium"
+    },
+    {
+        "date":"09 Dec 25",
+        "description\/particulars":"EFTPOS 09\/12 12:16 NEXTRA QUEEN ST UPPER MT GRAV",
+        "debit":"$19.95",
+        "credit":"",
+        "balance":"$5,603.73 CR",
+        "category":"Food & Dining",
+        "category_confidence":"high"
+    },
+    {
+        "date":"10 Dec 25",
+        "description\/particulars":"V0103 09\/12 SUSHIA MYER BRISBANE BRISBANE 74249235343",
+        "debit":"$17.98",
+        "credit":"",
+        "balance":"$10,285.52 CR",
+        "category":"Food & Dining",
+        "category_confidence":"high"
+    },
+    {
+        "date":"10 Dec 25",
+        "description\/particulars":"WAGES\/SAL 11786900 DXC TECHNOLOGY A HASHIM HILAL",
+        "debit":"",
+        "credit":"$4,731.51",
+        "balance":"$10,315.14 CR",
+        "category":"Income & Salary",
+        "category_confidence":"high"
+    },
+    {
+        "date":"10 Dec 25",
+        "description\/particulars":"BRISBANE CBD MUSLIM G3958389556 CHARITY",
+        "debit":"$11.64",
+        "credit":"",
+        "balance":"$10,303.50 CR",
+        "category":"Charity & Donations",
+        "category_confidence":"high"
+    },
+    {
+        "date":"12 Dec 25",
+        "description\/particulars":"V0103 10\/12 RELAY MASCOT 24324405344",
+        "debit":"$23.28",
+        "credit":"",
+        "balance":"$10,215.00 CR",
+        "category":"Shopping & Retail",
+        "category_confidence":"medium"
+    },
+    {
+        "date":"12 Dec 25",
+        "description\/particulars":"V0103 10\/12 RELAY MASCOT 24324405344",
+        "debit":"$86.26",
+        "credit":"",
+        "balance":"$10,128.74 CR",
+        "category":"Shopping & Retail",
+        "category_confidence":"medium"
+    },
+    {
+        "date":"12 Dec 25",
+        "description\/particulars":"BRISBANE CBD MUSLIM A5258211840 CHARITY",
+        "debit":"$10.00",
+        "credit":"",
+        "balance":"$10,238.28 CR",
+        "category":"Charity & Donations",
+        "category_confidence":"high"
+    },
+    {
+        "date":"12 Dec 25",
+        "description\/particulars":"HASHIM HILAL F1350028108 HASHIM COMM BANK",
+        "debit":"$4,731.51",
+        "credit":"",
+        "balance":"$5,397.23 CR",
+        "category":"Transfers & Payments",
+        "category_confidence":"high"
+    },
+    {
+        "date":"15 Dec 25",
+        "description\/particulars":"EFTPOS 13\/12 05:05 VODAFONE AUSTRALIA\\",
+        "debit":"$30.00",
+        "credit":"",
+        "balance":"$5,367.23 CR",
+        "category":"Utilities & Bills",
+        "category_confidence":"high"
+    },
+    {
+        "date":"15 Dec 25",
+        "description\/particulars":"EFTPOS 14\/12 05:15 VODAFONE AUSTRALIA\\",
+        "debit":"$30.00",
+        "credit":"",
+        "balance":"$5,337.23 CR",
+        "category":"Utilities & Bills",
+        "category_confidence":"high"
+    },
+    {
+        "date":"15 Dec 25",
+        "description\/particulars":"V0103 13\/12 TELSTRA SERVICES MELBOURNE 74940525347",
+        "debit":"$85.00",
+        "credit":"",
+        "balance":"$5,252.23 CR",
+        "category":"Utilities & Bills",
+        "category_confidence":"high"
+    },
+    {
+        "date":"16 Dec 25",
+        "description\/particulars":"EFTPOS 16\/12 13:05 PUNJABI RASOI",
+        "debit":"$45.81",
+        "credit":"",
+        "balance":"$5,206.42 CR",
+        "category":"Food & Dining",
+        "category_confidence":"high"
+    },
+    {
+        "date":"17 Dec 25",
+        "description\/particulars":"V0103 15\/12 H3L3 PTY LTD FORTITUDE 74940525349",
+        "debit":"$5.80",
+        "credit":"",
+        "balance":"$5,200.62 CR",
+        "category":"Personal Care",
+        "category_confidence":"medium"
+    },
+    {
+        "date":"18 Dec 25",
+        "description\/particulars":"V0103 16\/12 AMAZON MARKETPLACE AU SYDNEY 74201335350",
+        "debit":"$64.19",
+        "credit":"",
+        "balance":"$5,136.43 CR",
+        "category":"Shopping & Retail",
+        "category_confidence":"high"
+    },
+    {
+        "date":"18 Dec 25",
+        "description\/particulars":"V0103 16\/12 PC SPRING HILL SPRING HIL 00296957530 $17.00",
+        "debit":"",
+        "credit":"",
+        "balance":"$5,119.43 CR",
+        "category":"Shopping & Retail",
+        "category_confidence":"high"
+    },
+    {
+        "date":"19 Dec 25",
+        "description\/particulars":"EFTPOS 19\/12 14:03 WU 9248626147\\",
+        "debit":"$500.00",
+        "credit":"",
+        "balance":"$4,619.43 CR",
+        "category":"Groceries & Supermarkets",
+        "category_confidence":"medium"
+    },
+    {
+        "date":"19 Dec 25",
+        "description\/particulars":"EFTPOS 19\/12 14:08 WU 5549792385\\",
+        "debit":"$331.99",
+        "credit":"",
+        "balance":"$4,287.44 CR",
+        "category":"Groceries & Supermarkets",
+        "category_confidence":"medium"
+    },
+    {
+        "date":"19 Dec 25",
+        "description\/particulars":"EFTPOS 19\/12 14:04 WU 9293520634\\",
+        "debit":"$354.00",
+        "credit":"",
+        "balance":"$3,933.44 CR",
+        "category":"Groceries & Supermarkets",
+        "category_confidence":"medium"
+    },
+    {
+        "date":"19 Dec 25",
+        "description\/particulars":"ONLINE Z0735687735 ZAKAT HILAL H",
+        "debit":"",
+        "credit":"$202.24",
+        "balance":"$4,135.68 CR",
+        "category":"Charity & Donations",
+        "category_confidence":"high"
+    },
+    {
+        "date":"19 Dec 25",
+        "description\/particulars":"HASHIM HILAL JANUARY",
+        "debit":"",
+        "credit":"$804.99",
+        "balance":"$4,940.67 CR",
+        "category":"Subscriptions",
+        "category_confidence":"medium"
+    },
+    {
+        "date":"19 Dec 25",
+        "description\/particulars":"V0103 17\/12 NCS PEARSON VUE STORE 800-511-34 24672745351",
+        "debit":"$429.00",
+        "credit":"",
+        "balance":"$4,511.67 CR",
+        "category":"Education",
+        "category_confidence":"high"
+    },
+    {
+        "date":"22 Dec 25",
+        "description\/particulars":"V0103 17\/12 INTL TXN FEE-SC 24672745351",
+        "debit":"$15.02",
+        "credit":"",
+        "balance":"$4,496.65 CR",
+        "category":"Financial Services",
+        "category_confidence":"high"
+    },
+    {
+        "date":"22 Dec 25",
+        "description\/particulars":"V0103 19\/12 AMAZON MARKETPLACE AU SYDNEY 74201335354",
+        "debit":"$62.49",
+        "credit":"",
+        "balance":"$4,434.16 CR",
+        "category":"Shopping & Retail",
+        "category_confidence":"high"
+    },
+    {
+        "date":"22 Dec 25",
+        "description\/particulars":"HASHIM HILAL L9616332433 HASHIM ANZ",
+        "debit":"$88.58",
+        "credit":"",
+        "balance":"$4,345.58 CR",
+        "category":"Transfers & Payments",
+        "category_confidence":"medium"
+    },
+    {
+        "date":"23 Dec 25",
+        "description\/particulars":"V0103 20\/12 CITY AQUATICS SPRING HIL 74564505356",
+        "debit":"$60.60",
+        "credit":"",
+        "balance":"$4,284.98 CR",
+        "category":"Personal Care",
+        "category_confidence":"medium"
+    },
+    {
+        "date":"23 Dec 25",
+        "description\/particulars":"V0103 22\/12 BIG W\/QUEEN&EDWARD&ELIZ BRISBANE 74278245356",
+        "debit":"$24.35",
+        "credit":"",
+        "balance":"$4,260.63 CR",
+        "category":"Shopping & Retail",
+        "category_confidence":"high"
+    },
+    {
+        "date":"23 Dec 25",
+        "description\/particulars":"H HILAL AND A A ABBAR 0150368434 GROCERY",
+        "debit":"$200.00",
+        "credit":"",
+        "balance":"$4,060.63 CR",
+        "category":"Groceries & Supermarkets",
+        "category_confidence":"high"
+    },
+    {
+        "date":"24 Dec 25",
+        "description\/particulars":"H HILAL AND A A ABBAD 9816647144 GROCERY",
+        "debit":"$73.38",
+        "credit":"",
+        "balance":"$3,987.25 CR",
+        "category":"Groceries & Supermarkets",
+        "category_confidence":"high"
+    },
+    {
+        "date":"24 Dec 25",
+        "description\/particulars":"WAGES\/SAL 11786900 DXC TECHNOLOGY A",
+        "debit":"",
+        "credit":"$5,712.75",
+        "balance":"$9,700.00 CR",
+        "category":"Income & Salary",
+        "category_confidence":"high"
+    },
+    {
+        "date":"25 Dec 25",
+        "description\/particulars":"NPP-P0CPC4914JGM261L",
+        "debit":"$100.00",
+        "credit":"",
+        "balance":"$9,600.00 CR",
+        "category":"Transfers & Payments",
+        "category_confidence":"high"
+    },
+    {
+        "date":"25 Dec 25",
+        "description\/particulars":"NPP-P0CPD1747I1P0Z09",
+        "debit":"$600.00",
+        "credit":"",
+        "balance":"$9,000.00 CR",
+        "category":"Transfers & Payments",
+        "category_confidence":"high"
+    }
+]

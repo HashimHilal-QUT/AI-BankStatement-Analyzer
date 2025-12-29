@@ -1291,5 +1291,5 @@ if st.session_state.df_categorized is not None:
     )
 
 else:
-        
-    st.info("💡 **Note**: Processing may take 1-2 minutes depending on the size of your statement. AI models are used for both PDF extraction and categorization.")
+    st.info("💡 **Note**: AI Processing may take 1-2 minutes. AI models are used for both PDF extraction and categorization.")
+    st.warning("⚠️ **Disclaimer**:  Due to varying PDF layouts from various banks, transaction extraction accuracy may vary.")

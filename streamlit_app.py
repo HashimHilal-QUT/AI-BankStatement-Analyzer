@@ -846,17 +846,18 @@ Provide a detailed, actionable answer with specific recommendations and numbers:
 st.markdown("<h1 class='main-header'>🏦 Bank Statement Analyzer</h1>", unsafe_allow_html=True)
 st.markdown("Upload your bank statement PDF and get instant financial insights with AI-powered categorization.")
 
-# Sidebar for file upload and filters
-#st.sidebar.header("📁 Data Upload")
+# API Key
+#st.markdown("---")
+#st.header("⚙️ Configuration")
+#Token = st.text_input("HuggingFace API Key / Token", type="password", help="Enter your HuggingFace Token")
 
 # File upload section
-#st.sidebar.markdown("<div class='upload-section'>", unsafe_allow_html=True)
+
 uploaded_pdf = st.sidebar.file_uploader(
     "Upload your bank statement PDF",
     type=['pdf'],
     help="Upload a PDF bank statement to analyze your transactions"
 )
-#st.sidebar.markdown("</div>", unsafe_allow_html=True)
 
 # Process PDF button
 if uploaded_pdf is not None and st.session_state.df_categorized is None:
@@ -1274,38 +1275,8 @@ if st.session_state.df_categorized is not None:
             # Format and display insights
             insights_text = st.session_state.ai_insights
             st.markdown(insights_text)
-            
-            
-            # Ask specific questions section
-            st.markdown("---")
-            st.markdown("<h3 class='sub-header'>💡 Ask a Specific Financial Question</h3>", unsafe_allow_html=True)
-            
-            question = st.text_input("Ask a question about your finances:", 
-                                    placeholder="e.g., 'How can I save $500 per month?' or 'What's a realistic savings goal for me?'",
-                                    key="financial_question")
-            
-            if question and st.button("Ask AI", type="secondary", key="ask_ai_button"):
-                with st.spinner("Thinking..."):
-                    try:
-                        config = {
-                            "base_url": "https://router.huggingface.co/v1",
-                            "api_key": st.secrets["HUGGINGFACE_API_KEY"],
-                            "model": "openai/gpt-oss-20b",
-                            "max_tokens": 2000,
-                            "timeout": 300
-                        }
                         
-                        advisor = FinancialInsightsAdvisor(config)
-                        answer = advisor.ask_financial_question(df, question)
-                        
-                        st.markdown('<div class="insight-section insight-section-info">', unsafe_allow_html=True)
-                        st.markdown(f"**Question:** {question}")
-                        st.markdown("---")
-                        st.markdown(f"**Answer:**\n\n{answer}")
-                        st.markdown('</div>', unsafe_allow_html=True)
-                    except Exception as e:
-                        st.error(f"Error getting answer: {str(e)}")
-    
+            
     # Footer
     st.markdown("---")
     st.markdown(

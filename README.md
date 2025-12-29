@@ -120,12 +120,12 @@
 <img width="1900" height="1000" alt="AI Based Insights and Recommendations" src="https://github.com/user-attachments/assets/b7130c64-f92a-4e1b-a441-f48f20effd91" />
 <img width="1900" height="1000" alt="AI based Budget Plan" src="https://github.com/user-attachments/assets/ea7c07a3-437d-4f67-a563-70144a2defb5" />
 
-#### 🔧 Troubleshooting
+## 🔧 Troubleshooting
 
 | Issue | Solution |
 |-------|----------|
 | **PDF processing failed** | Ensure Poppler is installed and in PATH |
-| **API key error** | Check `.streamlit/secrets.toml` file exists and contains valid HuggingFace API key |
+| **API key error** | Check valid HuggingFace API key |
 | **Slow processing** | Reduce PDF DPI in code or split large statements into smaller files |
 | **No transactions found** | Ensure PDF has clear text/table format, try higher DPI setting |
 | **Memory error** | Reduce batch size in categorization settings |

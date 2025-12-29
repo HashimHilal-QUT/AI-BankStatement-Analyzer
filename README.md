@@ -109,6 +109,13 @@
 
 🤖 AI Insights - Personalized financial advice and Q&A
 
+🔧 Troubleshooting
+Issue,Solution
+"""PDF processing failed""",Ensure Poppler is installed and in PATH
+"""API key error""",Check .streamlit/secrets.toml file
+"""Slow processing""",Reduce PDF DPI or split large statements
+"""No transactions found""",Ensure PDF has clear text/table format
+
 🎥 Demo Screenshots
 
 <img width="1914" height="1034" alt="FirstPage" src="https://github.com/user-attachments/assets/628772b1-2d52-4233-930b-15f27998ad93" />
@@ -118,9 +125,4 @@
 <img width="1820" height="965" alt="AI Based Insights and Recommendations" src="https://github.com/user-attachments/assets/b7130c64-f92a-4e1b-a441-f48f20effd91" />
 <img width="1660" height="828" alt="AI based Budget Plan" src="https://github.com/user-attachments/assets/ea7c07a3-437d-4f67-a563-70144a2defb5" />
 
-🔧 Troubleshooting
-Issue,Solution
-"""PDF processing failed""",Ensure Poppler is installed and in PATH
-"""API key error""",Check .streamlit/secrets.toml file
-"""Slow processing""",Reduce PDF DPI or split large statements
-"""No transactions found""",Ensure PDF has clear text/table format
+

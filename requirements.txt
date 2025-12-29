@@ -4,3 +4,8 @@ numpy
 plotly
 matplotlib
 seaborn
+pillow
+pdf2image
+huggingface-hub
+openai
+poppler-utils  

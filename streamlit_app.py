@@ -850,13 +850,13 @@ st.markdown("Upload your bank statement PDF and get instant financial insights w
 #st.sidebar.header("📁 Data Upload")
 
 # File upload section
-st.sidebar.markdown("<div class='upload-section'>", unsafe_allow_html=True)
+#st.sidebar.markdown("<div class='upload-section'>", unsafe_allow_html=True)
 uploaded_pdf = st.sidebar.file_uploader(
     "Upload your bank statement PDF",
     type=['pdf'],
     help="Upload a PDF bank statement to analyze your transactions"
 )
-st.sidebar.markdown("</div>", unsafe_allow_html=True)
+#st.sidebar.markdown("</div>", unsafe_allow_html=True)
 
 # Process PDF button
 if uploaded_pdf is not None and st.session_state.df_categorized is None:
@@ -1273,31 +1273,8 @@ if st.session_state.df_categorized is not None:
             
             # Format and display insights
             insights_text = st.session_state.ai_insights
+            st.markdown(insights_text)
             
-            # Split insights into sections for better display
-            sections = re.split(r'\n#+|\n##+', insights_text)
-            
-            for section in sections:
-                if section.strip():
-                    # Check section type for styling
-                    section_lower = section.lower()
-                    if 'warning' in section_lower or 'concern' in section_lower or 'red flag' in section_lower:
-                        st.markdown(f'<div class="insight-section insight-section-warning">{section}</div>', unsafe_allow_html=True)
-                    elif 'recommendation' in section_lower or 'action' in section_lower or 'quick win' in section_lower:
-                        st.markdown(f'<div class="insight-section insight-section-success">{section}</div>', unsafe_allow_html=True)
-                    elif 'analysis' in section_lower or 'insight' in section_lower or 'observation' in section_lower:
-                        st.markdown(f'<div class="insight-section insight-section-info">{section}</div>', unsafe_allow_html=True)
-                    else:
-                        st.markdown(f'<div class="insight-section">{section}</div>', unsafe_allow_html=True)
-            
-            # Download insights button
-            insights_bytes = st.session_state.ai_insights.encode('utf-8')
-            st.download_button(
-                label="📥 Download Insights Report",
-                data=insights_bytes,
-                file_name="financial_insights_report.txt",
-                mime="text/plain"
-            )
             
             # Ask specific questions section
             st.markdown("---")

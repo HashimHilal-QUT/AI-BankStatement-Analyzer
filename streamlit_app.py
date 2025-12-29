@@ -1,3 +1,4 @@
+# streamlit_app.py
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -17,10 +18,11 @@ from PIL import Image
 from pdf2image import convert_from_path
 from openai import OpenAI
 from typing import Dict, List
+from huggingface_hub import InferenceClient
 
 # Set page configuration
 st.set_page_config(
-    page_title="Bank Statement Analyzer",
+    page_title="AI Bank Statement Analyzer",
     page_icon="💰",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -76,6 +78,25 @@ st.markdown("""
         color: #991B1B;
         border: 1px solid #EF4444;
     }
+    .insight-section {
+        background-color: #F8FAFC;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-left: 5px solid #3B82F6;
+    }
+    .insight-section-warning {
+        border-left: 5px solid #F59E0B;
+        background-color: #FFFBEB;
+    }
+    .insight-section-success {
+        border-left: 5px solid #10B981;
+        background-color: #ECFDF5;
+    }
+    .insight-section-info {
+        border-left: 5px solid #3B82F6;
+        background-color: #EFF6FF;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -86,9 +107,201 @@ if 'processing_status' not in st.session_state:
     st.session_state.processing_status = None
 if 'df_raw' not in st.session_state:
     st.session_state.df_raw = None
+if 'ai_insights' not in st.session_state:
+    st.session_state.ai_insights = None
+if 'ai_processing' not in st.session_state:
+    st.session_state.ai_processing = False
 
 # ============================================================================
-# PDF PROCESSING AND CATEGORIZATION FUNCTIONS
+# HELPER FUNCTIONS
+# ============================================================================
+
+def extract_json_safely(text):
+    """Surgically extracts the first JSON object found in a string."""
+    try:
+        # Look for the first '{' and the last '}'
+        match = re.search(r'(\{.*\})', text, re.DOTALL)
+        if match:
+            return json.loads(match.group(1))
+        return None
+    except json.JSONDecodeError:
+        # If it's still broken (truncated), try to close the JSON manually
+        try:
+            return json.loads(text + ']}')
+        except:
+            return None
+
+def process_data(df):
+    """Process and clean the transaction dataframe"""
+    if df.empty:
+        return df
+    
+    # Convert date to datetime if it's not already
+    if not pd.api.types.is_datetime64_any_dtype(df['date']):
+        try:
+            df['date'] = pd.to_datetime(df['date'], format='%d %b %y')
+        except:
+            # Try other common date formats
+            df['date'] = pd.to_datetime(df['date'], errors='coerce')
+    
+    # Extract transaction month and day of week
+    df['month'] = df['date'].dt.month
+    df['month_name'] = df['date'].dt.month_name()
+    df['day_of_week'] = df['date'].dt.day_name()
+    df['day'] = df['date'].dt.day
+    
+    # Convert debit and credit to numeric values
+    if 'debit' in df.columns:
+        df['debit'] = df['debit'].replace(r'[\$,]', '', regex=True).replace('', '0').astype(float)
+    else:
+        df['debit'] = 0.0
+    
+    if 'credit' in df.columns:
+        df['credit'] = df['credit'].replace(r'[\$,]', '', regex=True).replace('', '0').astype(float)
+    else:
+        df['credit'] = 0.0
+    
+    # Create a unified amount column (positive for credits, negative for debits)
+    df['amount'] = df['credit'] - df['debit']
+    df['abs_amount'] = abs(df['amount'])
+    
+    # Extract transaction type
+    df['transaction_type'] = df.apply(
+        lambda row: 'Credit' if row['credit'] > 0 else 'Debit', axis=1
+    )
+    
+    # Clean balance column if it exists
+    if 'balance' in df.columns:
+        df['balance'] = df['balance'].replace(r'[\$, CR]', '', regex=True).astype(float)
+    else:
+        # Create a simulated balance if not present
+        df['balance'] = df['amount'].cumsum()
+    
+    # Check if category columns exist, create default if not
+    if 'category' not in df.columns:
+        df['category'] = 'Uncategorized'
+    
+    if 'category_confidence' not in df.columns:
+        df['category_confidence'] = 'medium'
+    
+    return df
+
+# ============================================================================
+# PDF PROCESSING FUNCTIONS
+# ============================================================================
+
+def parse_full_statement(pdf_path, hf_client):
+    """Process PDF and extract transactions using HuggingFace Vision model"""
+    try:
+        pages = convert_from_path(pdf_path, dpi=250) # Higher DPI for dense text
+        full_data = {"bank_name": None, "account_number": None, "all_transactions": []}
+
+        progress_bar = st.progress(0)
+        status_text = st.empty()
+
+        for i, page in enumerate(pages):
+            status_text.text(f"Processing page {i+1}/{len(pages)}...")
+            progress_bar.progress((i + 1) / len(pages))
+
+            buffered = BytesIO()
+            page.save(buffered, format="PNG")
+            img_str = base64.b64encode(buffered.getvalue()).decode("utf-8")
+
+            # NUDGE: Explicitly tell the AI to be brief to save tokens
+            prompt = """
+            Output ONLY raw JSON for the transaction table on this page.
+            Do not explain. Do not add intro text.
+            JSON structure: {"bank_name": "", "account_number": "", "year": "", "transactions": [{"date": "", "description/particulars": "", "debit": "", "credit": "", "balance": ""}]}
+            """
+
+            try:
+                response = hf_client.chat_completion(
+                    messages=[{
+                        "role": "user",
+                        "content": [
+                            {"type": "text", "text": prompt},
+                            {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{img_str}"}}
+                        ],
+                    }],
+                    max_tokens=3000,
+                    temperature=0.1
+                )
+
+                raw_content = response.choices[0].message.content
+                page_json = extract_json_safely(raw_content)
+
+                if page_json:
+                    if page_json.get("bank_name") and not full_data["bank_name"]:
+                        full_data["bank_name"] = page_json["bank_name"]
+                    full_data["all_transactions"].extend(page_json.get("transactions", []))
+                else:
+                    st.warning(f"Could not parse JSON on Page {i+1}")
+
+            except Exception as e:
+                st.warning(f"Error on page {i+1}: {e}")
+
+        progress_bar.empty()
+        status_text.empty()
+        
+        return full_data
+    except Exception as e:
+        st.error(f"Error processing PDF: {e}")
+        return None
+
+def process_pdf_to_dataframe(pdf_file):
+    """Main function to process PDF and return categorized DataFrame"""
+    try:
+        # Save uploaded file to temporary location
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as tmp_file:
+            tmp_file.write(pdf_file.getvalue())
+            pdf_path = tmp_file.name
+        
+        # Initialize HuggingFace clients
+        HF_TOKEN = st.secrets["HUGGINGFACE_API_KEY"]
+        
+        # Initialize Vision client for PDF processing
+        vision_client = InferenceClient(model="Qwen/Qwen2.5-VL-7B-Instruct", token=HF_TOKEN)
+        
+        # Step 1: Extract transactions from PDF
+        st.info("📄 Extracting transactions from PDF...")
+        result = parse_full_statement(pdf_path, vision_client)
+        
+        if not result or not result["all_transactions"]:
+            st.error("No transactions found in the PDF")
+            return None
+        
+        # Convert to DataFrame
+        df = pd.DataFrame(result["all_transactions"])
+        st.session_state.df_raw = df.copy()
+        
+        # Step 2: Categorize transactions
+        st.info("🏷️ Categorizing transactions...")
+        
+        # Initialize categorizer
+        config = {
+            "base_url": "https://router.huggingface.co/v1",
+            "api_key": st.secrets["HUGGINGFACE_API_KEY"],
+            "model": "openai/gpt-oss-20b",
+            "max_tokens": 16000,
+            "timeout": 300
+        }
+        
+        categorizer = HuggingFaceTransactionCategorizer(config)
+        
+        # Process data
+        df_categorized = categorizer.categorize_dataframe(df, batch_size=20)
+        
+        # Clean up temporary file
+        os.unlink(pdf_path)
+        
+        return df_categorized
+        
+    except Exception as e:
+        st.error(f"Error processing PDF: {e}")
+        return None
+
+# ============================================================================
+# TRANSACTION CATEGORIZER CLASS
 # ============================================================================
 
 class HuggingFaceTransactionCategorizer:
@@ -306,186 +519,324 @@ Return the JSON now:"""
 
         return result_df
 
-def extract_json_safely(text):
-    """Surgically extracts the first JSON object found in a string."""
-    try:
-        # Look for the first '{' and the last '}'
-        match = re.search(r'(\{.*\})', text, re.DOTALL)
-        if match:
-            return json.loads(match.group(1))
-        return None
-    except json.JSONDecodeError:
-        # If it's still broken (truncated), try to close the JSON manually
-        try:
-            return json.loads(text + ']}')
-        except:
-            return None
+# ============================================================================
+# AI FINANCIAL INSIGHTS AND BUDGET ADVISOR CLASS
+# ============================================================================
 
-def parse_full_statement(pdf_path, hf_client):
-    """Process PDF and extract transactions using HuggingFace Vision model"""
-    try:
-        pages = convert_from_path(pdf_path, dpi=250) # Higher DPI for dense text
-        full_data = {"bank_name": None, "account_number": None, "all_transactions": []}
+class FinancialInsightsAdvisor:
+    """
+    Generate personalized financial insights and budget recommendations using LLM
+    """
 
-        progress_bar = st.progress(0)
-        status_text = st.empty()
+    def __init__(self, config: Dict = None):
+        """
+        Initialize with HuggingFace configuration
+        """
+        if config is None:
+            config = {
+                "base_url": "https://router.huggingface.co/v1",
+                "api_key": st.secrets["HUGGINGFACE_API_KEY"],
+                "model": "openai/gpt-oss-20b",
+                "max_tokens": 8000,
+                "timeout": 300
+            }
 
-        for i, page in enumerate(pages):
-            status_text.text(f"Processing page {i+1}/{len(pages)}...")
-            progress_bar.progress((i + 1) / len(pages))
+        self.config = config
+        self.client = OpenAI(
+            base_url=config["base_url"],
+            api_key=config["api_key"],
+            timeout=config.get("timeout", 300)
+        )
+        self.model = config["model"]
+        self.max_tokens = config.get("max_tokens", 8000)
 
-            buffered = BytesIO()
-            page.save(buffered, format="PNG")
-            img_str = base64.b64encode(buffered.getvalue()).decode("utf-8")
+    def prepare_financial_summary(self, df: pd.DataFrame) -> Dict:
+        """
+        Extract key financial metrics from the DataFrame
+        """
+        # Ensure numeric columns
+        df_clean = df.copy()
+        for col in ['debit', 'credit', 'balance']:
+            if col in df_clean.columns:
+                if df_clean[col].dtype == 'object':
+                    df_clean[col] = df_clean[col].astype(str).str.replace(r'[\$, CR]', '', regex=True).str.replace(',', '')
+                df_clean[col] = pd.to_numeric(df_clean[col], errors='coerce').fillna(0)
 
-            # NUDGE: Explicitly tell the AI to be brief to save tokens
-            prompt = """
-            Output ONLY raw JSON for the transaction table on this page.
-            Do not explain. Do not add intro text.
-            JSON structure: {"bank_name": "", "account_number": "", "year": "", "transactions": [{"date": "", "description/particulars": "", "debit": "", "credit": "", "balance": ""}]}
+        # Calculate key metrics
+        total_income = df_clean['credit'].sum()
+        total_expenses = df_clean['debit'].sum()
+        net_savings = total_income - total_expenses
+        savings_rate = (net_savings / total_income * 100) if total_income > 0 else 0
+
+        # Starting and ending balance
+        if 'balance' in df_clean.columns:
+            start_balance = df_clean.iloc[0]['balance']
+            end_balance = df_clean.iloc[-1]['balance']
+            balance_change = end_balance - start_balance
+        else:
+            start_balance = 0
+            end_balance = net_savings
+            balance_change = net_savings
+
+        # Date range
+        df_clean['date'] = pd.to_datetime(df_clean['date'], errors='coerce')
+        if df_clean['date'].notna().any():
+            date_range_days = (df_clean['date'].max() - df_clean['date'].min()).days + 1
+            start_date = df_clean['date'].min().strftime('%Y-%m-%d')
+            end_date = df_clean['date'].max().strftime('%Y-%m-%d')
+        else:
+            date_range_days = len(df_clean)
+            start_date = "Unknown"
+            end_date = "Unknown"
+
+        # Category breakdown (expenses only)
+        spending_data = df_clean[df_clean['debit'] > 0].copy()
+        if not spending_data.empty:
+            category_spending = spending_data.groupby('category')['debit'].agg(['sum', 'count', 'mean']).round(2)
+            category_spending.columns = ['total', 'transactions', 'avg_amount']
+            category_spending['percentage'] = (category_spending['total'] / total_expenses * 100).round(2)
+            category_spending = category_spending.sort_values('total', ascending=False)
+            top_categories = category_spending.head(10).to_dict('index')
+        else:
+            top_categories = {}
+
+        # Daily average spending
+        if not spending_data.empty and 'date' in spending_data.columns and spending_data['date'].notna().any():
+            daily_spending = spending_data.groupby(spending_data['date'].dt.date)['debit'].sum()
+            avg_daily_spending = daily_spending.mean()
+            top_spending_days = daily_spending.nlargest(3).to_dict()
+        else:
+            avg_daily_spending = 0
+            top_spending_days = {}
+
+        # Income sources
+        income_data = df_clean[df_clean['credit'] > 0].copy()
+        income_by_category = income_data.groupby('category')['credit'].sum().to_dict()
+
+        # Transaction patterns
+        transaction_count = len(df_clean)
+        avg_transaction_size = spending_data['debit'].mean() if not spending_data.empty else 0
+
+        # Day of week patterns
+        if not spending_data.empty and 'date' in spending_data.columns and spending_data['date'].notna().any():
+            spending_data['day_of_week'] = spending_data['date'].dt.day_name()
+            spending_by_dow = spending_data.groupby('day_of_week')['debit'].sum().to_dict()
+        else:
+            spending_by_dow = {}
+
+        summary = {
+            "period": {
+                "start_date": start_date,
+                "end_date": end_date,
+                "days": date_range_days
+            },
+            "income": {
+                "total": round(total_income, 2),
+                "sources": income_by_category
+            },
+            "expenses": {
+                "total": round(total_expenses, 2),
+                "daily_average": round(avg_daily_spending, 2),
+                "avg_transaction_size": round(avg_transaction_size, 2)
+            },
+            "savings": {
+                "net_amount": round(net_savings, 2),
+                "savings_rate_percent": round(savings_rate, 2)
+            },
+            "balance": {
+                "starting": round(start_balance, 2),
+                "ending": round(end_balance, 2),
+                "change": round(balance_change, 2)
+            },
+            "category_breakdown": top_categories,
+            "top_spending_days": {str(k): round(v, 2) for k, v in top_spending_days.items()},
+            "spending_by_day_of_week": {k: round(v, 2) for k, v in spending_by_dow.items()},
+            "transaction_count": transaction_count
+        }
+
+        return summary
+
+    def create_insights_prompt(self, financial_summary: Dict) -> str:
+            """
+            Create a comprehensive prompt for financial insights
             """
 
-            try:
-                response = hf_client.chat_completion(
-                    messages=[{
-                        "role": "user",
-                        "content": [
-                            {"type": "text", "text": prompt},
-                            {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{img_str}"}}
-                        ],
-                    }],
-                    max_tokens=3000,
-                    temperature=0.1
-                )
+            summary_json = json.dumps(financial_summary, indent=2)
 
-                raw_content = response.choices[0].message.content
-                page_json = extract_json_safely(raw_content)
+            prompt = f"""You are an expert financial advisor analyzing a user's bank statement data. Your role is to provide personalized, actionable financial insights and budget recommendations.
 
-                if page_json:
-                    if page_json.get("bank_name") and not full_data["bank_name"]:
-                        full_data["bank_name"] = page_json["bank_name"]
-                    full_data["all_transactions"].extend(page_json.get("transactions", []))
-                else:
-                    st.warning(f"Could not parse JSON on Page {i+1}")
+                **FINANCIAL DATA SUMMARY:**
+                ```json
+                {summary_json}
+                ```
 
-            except Exception as e:
-                st.warning(f"Error on page {i+1}: {e}")
+                **YOUR TASK:**
+                Analyze this financial data comprehensively and provide:
 
-        progress_bar.empty()
-        status_text.empty()
-        
-        return full_data
-    except Exception as e:
-        st.error(f"Error processing PDF: {e}")
-        return None
+                1. **OVERALL FINANCIAL HEALTH ASSESSMENT**
+                - Evaluate their savings rate and financial position
+                - Comment on income stability and expense patterns
+                - Identify the overall financial health score (1-10)
 
-def process_pdf_to_dataframe(pdf_file):
-    """Main function to process PDF and return categorized DataFrame"""
-    try:
-        # Save uploaded file to temporary location
-        with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as tmp_file:
-            tmp_file.write(pdf_file.getvalue())
-            pdf_path = tmp_file.name
-        
-        # Initialize HuggingFace clients
-        HF_TOKEN = st.secrets["HUGGINGFACE_API_KEY"]
-        
-        # Initialize Vision client for PDF processing
-        from huggingface_hub import InferenceClient
-        vision_client = InferenceClient(model="Qwen/Qwen2.5-VL-7B-Instruct", token=HF_TOKEN)
-        
-        # Step 1: Extract transactions from PDF
-        st.info("📄 Extracting transactions from PDF...")
-        result = parse_full_statement(pdf_path, vision_client)
-        
-        if not result or not result["all_transactions"]:
-            st.error("No transactions found in the PDF")
-            return None
-        
-        # Convert to DataFrame
-        df = pd.DataFrame(result["all_transactions"])
-        st.session_state.df_raw = df.copy()
-        
-        # Step 2: Categorize transactions
-        st.info("🏷️ Categorizing transactions...")
-        
-        # Initialize categorizer
-        config = {
-            "base_url": "https://router.huggingface.co/v1",
-            "api_key": st.secrets["HUGGINGFACE_API_KEY"],
-            "model": "openai/gpt-oss-20b",
-            "max_tokens": 16000,
-            "timeout": 300
-        }
-        
-        categorizer = HuggingFaceTransactionCategorizer(config)
-        
-        # Process data
-        df_categorized = categorizer.categorize_dataframe(df, batch_size=20)
-        
-        # Clean up temporary file
-        os.unlink(pdf_path)
-        
-        return df_categorized
-        
-    except Exception as e:
-        st.error(f"Error processing PDF: {e}")
-        return None
+                2. **SPENDING PATTERN ANALYSIS**
+                - Identify top spending categories and their reasonableness
+                - Highlight any unusual spending patterns or red flags
+                - Compare spending against typical budget guidelines (50/30/20 rule, etc.)
+                - Identify categories where spending is above average
 
-def process_data(df):
-    """Process and clean the transaction dataframe"""
-    if df.empty:
-        return df
-    
-    # Convert date to datetime if it's not already
-    if not pd.api.types.is_datetime64_any_dtype(df['date']):
+                3. **KEY INSIGHTS & OBSERVATIONS**
+                - Point out interesting patterns (day of week trends, spending spikes)
+                - Identify potential waste or unnecessary expenses
+                - Recognize positive financial behaviors
+                - Note any concerning trends
+
+                4. **ACTIONABLE RECOMMENDATIONS**
+                - Provide 5-7 specific, actionable recommendations to improve their budget
+                - Suggest realistic spending targets for each major category
+                - Recommend savings goals based on their income
+                - Provide tips for reducing expenses in high-spending categories
+                - Suggest budget allocation percentages
+
+                5. **BUDGET PLAN**
+                - Create a recommended monthly budget breakdown
+                - Set spending limits for each category
+                - Define a realistic savings target
+                - Suggest an emergency fund goal
+
+                6. **QUICK WINS**
+                - List 3-5 immediate actions they can take this week
+                - Focus on high-impact, easy-to-implement changes
+
+                **TONE & STYLE:**
+                - Be encouraging and supportive, not judgmental
+                - Use clear, simple language (avoid jargon)
+                - Be specific with numbers and percentages
+                - Focus on practical, achievable recommendations
+                - Celebrate positive behaviors while addressing concerns
+
+                **FORMAT YOUR RESPONSE AS:**
+                Use clear headings, bullet points, and structured sections. Include specific dollar amounts and percentages. Make it easy to read and actionable.
+
+                Provide your comprehensive financial analysis and recommendations now:"""
+
+            return prompt
+
+    def get_financial_insights(self, df: pd.DataFrame) -> str:
+        """
+        Generate comprehensive financial insights using LLM
+        """
         try:
-            df['date'] = pd.to_datetime(df['date'], format='%d %b %y')
-        except:
-            # Try other common date formats
-            df['date'] = pd.to_datetime(df['date'], errors='coerce')
-    
-    # Extract transaction month and day of week
-    df['month'] = df['date'].dt.month
-    df['month_name'] = df['date'].dt.month_name()
-    df['day_of_week'] = df['date'].dt.day_name()
-    df['day'] = df['date'].dt.day
-    
-    # Convert debit and credit to numeric values
-    if 'debit' in df.columns:
-        df['debit'] = df['debit'].replace(r'[\$,]', '', regex=True).replace('', '0').astype(float)
-    else:
-        df['debit'] = 0.0
-    
-    if 'credit' in df.columns:
-        df['credit'] = df['credit'].replace(r'[\$,]', '', regex=True).replace('', '0').astype(float)
-    else:
-        df['credit'] = 0.0
-    
-    # Create a unified amount column (positive for credits, negative for debits)
-    df['amount'] = df['credit'] - df['debit']
-    df['abs_amount'] = abs(df['amount'])
-    
-    # Extract transaction type
-    df['transaction_type'] = df.apply(
-        lambda row: 'Credit' if row['credit'] > 0 else 'Debit', axis=1
+            # Prepare financial summary
+            financial_summary = self.prepare_financial_summary(df)
+            
+            # Create prompt
+            prompt = self.create_insights_prompt(financial_summary)
+
+            # Call LLM
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=[
+                    {
+                        "role": "system",
+                        "content": "You are an expert financial advisor providing personalized budget insights and recommendations. Be specific, actionable, and encouraging."
+                    },
+                    {
+                        "role": "user",
+                        "content": prompt
+                    }
+                ],
+                max_tokens=self.max_tokens,
+                temperature=0.7
+            )
+
+            insights = response.choices[0].message.content
+            return insights
+
+        except Exception as e:
+            st.error(f"Error generating AI insights: {e}")
+            return self._generate_fallback_insights(financial_summary)
+        
+
+    def _generate_fallback_insights(self, summary: Dict) -> str:
+        """
+        Generate basic insights if LLM call fails
+        """
+        insights = f"""
+                # FINANCIAL ANALYSIS REPORT
+
+                ## Overall Financial Health
+                - Total Income: ${summary['income']['total']:,.2f}
+                - Total Expenses: ${summary['expenses']['total']:,.2f}
+                - Net Savings: ${summary['savings']['net_amount']:,.2f}
+                - Savings Rate: {summary['savings']['savings_rate_percent']:.1f}%
+
+                ## Top Spending Categories
+                """
+        for category, data in summary['category_breakdown'].items():
+            insights += f"- {category}: ${data['total']:,.2f} ({data['percentage']:.1f}% of expenses)\n"
+
+        insights += f"""
+            ## Recommendations
+            1. Review high-spending categories for potential savings
+            2. Aim for a savings rate of at least 20%
+            3. Track daily spending to stay within budget
+            4. Set specific spending limits for each category
+            5. Build an emergency fund covering 3-6 months of expenses
+            """
+        return insights 
+
+
+def ask_financial_question(df_categorized: pd.DataFrame, question: str) -> str:
+    """
+    Ask specific financial questions about your data
+
+    Args:
+        df_categorized: Your categorized DataFrame
+        question: Your specific question (e.g., "How can I save $500 per month?")
+
+    Returns:
+        AI-generated answer
+    """
+    config = {
+        "base_url": "https://router.huggingface.co/v1",
+        "api_key": st.secrets('HUGGINGFACE_API_KEY'),
+        "model": "openai/gpt-oss-20b",
+        "max_tokens": 8000,
+        "timeout": 300
+    }
+
+    advisor = FinancialInsightsAdvisor(config)
+    summary = advisor.prepare_financial_summary(df_categorized)
+
+    prompt = f"""You are a financial advisor. Based on this financial data:
+
+{json.dumps(summary, indent=2)}
+
+Answer this specific question: {question}
+
+Provide a detailed, actionable answer with specific recommendations and numbers:"""
+
+    client = OpenAI(
+        base_url=config["base_url"],
+        api_key=config["api_key"],
+        timeout=config["timeout"]
     )
-    
-    # Clean balance column if it exists
-    if 'balance' in df.columns:
-        df['balance'] = df['balance'].replace(r'[\$, CR]', '', regex=True).astype(float)
-    else:
-        # Create a simulated balance if not present
-        df['balance'] = df['amount'].cumsum()
-    
-    # Check if category columns exist, create default if not
-    if 'category' not in df.columns:
-        df['category'] = 'Uncategorized'
-    
-    if 'category_confidence' not in df.columns:
-        df['category_confidence'] = 'medium'
-    
-    return df
+
+    response = client.chat.completions.create(
+        model=config["model"],
+        messages=[
+            {"role": "system", "content": "You are a helpful financial advisor providing specific, actionable advice."},
+            {"role": "user", "content": prompt}
+        ],
+        max_tokens=config["max_tokens"],
+        temperature=0.7
+    )
+
+    answer = response.choices[0].message.content
+    print(f"\n💡 Answer to: '{question}'\n")
+    print(answer)
+
+    return answer
 
 # ============================================================================
 # STREAMLIT APP LAYOUT
@@ -496,7 +847,7 @@ st.markdown("<h1 class='main-header'>🏦 Bank Statement Analyzer</h1>", unsafe_
 st.markdown("Upload your bank statement PDF and get instant financial insights with AI-powered categorization.")
 
 # Sidebar for file upload and filters
-st.sidebar.header("📁 Data Upload")
+#st.sidebar.header("📁 Data Upload")
 
 # File upload section
 st.sidebar.markdown("<div class='upload-section'>", unsafe_allow_html=True)
@@ -524,6 +875,7 @@ if st.session_state.df_categorized is not None:
     if st.sidebar.button("🗑️ Clear Data", use_container_width=True):
         st.session_state.df_categorized = None
         st.session_state.df_raw = None
+        st.session_state.ai_insights = None
         st.session_state.processing_status = None
         st.rerun()
 
@@ -537,15 +889,8 @@ elif st.session_state.processing_status == "error":
 if st.session_state.df_categorized is not None:
     df = process_data(st.session_state.df_categorized.copy())
     
-    # Show raw data preview in sidebar
-    with st.sidebar.expander("📊 Raw Data Preview", expanded=False):
-        st.write(f"**Total Transactions:** {len(df)}")
-        st.write(f"**Date Range:** {df['date'].min().date()} to {df['date'].max().date()}")
-        st.write(f"**Categories:** {len(df['category'].unique())}")
-        st.dataframe(df[['date', 'description/particulars', 'debit', 'credit', 'category']].head(3), 
-                    use_container_width=True, height=150)
     
-    # Download JSON option in sidebar
+    # Download options in sidebar
     with st.sidebar.expander("💾 Export Data", expanded=False):
         json_data = df.to_json(orient='records', indent=4, date_format='iso')
         st.download_button(
@@ -647,12 +992,13 @@ if st.session_state.df_categorized is not None:
                      f"${amount:,.2f}")
     
     # Create tabs for different visualizations
-    tab1, tab2, tab3, tab4, tab5 = st.tabs([
+    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
         "📊 Overview", 
         "💰 Spending Analysis", 
         "📅 Time Analysis", 
         "🏷️ Category Breakdown",
-        "📋 Transaction Details"
+        "📋 Transaction Details",
+        "🤖 AI Insights"
     ])
     
     with tab1:
@@ -868,6 +1214,121 @@ if st.session_state.df_categorized is not None:
         else:
             st.info("No transactions match the current filters.")
     
+    with tab6:
+        st.markdown("<h2 class='sub-header'>🤖 AI Financial Insights & Budget Advisor</h2>", unsafe_allow_html=True)
+        
+        col1, col2 = st.columns([2, 1])
+        
+        with col1:
+            st.markdown("""
+            Get personalized AI-powered insights into your financial habits and receive actionable budget recommendations.
+            
+            **What you'll get:**
+            - 📊 Overall financial health assessment
+            - 💡 Key insights and observations
+            - 🎯 Actionable recommendations
+            - 📋 Personalized budget plan
+            - ⚡ Quick wins for immediate impact
+            """)
+        
+        with col2:
+            if st.button("🚀 Generate AI Insights", type="primary", use_container_width=True):
+                if st.session_state.ai_insights is None:
+                    st.session_state.ai_processing = True
+                    with st.spinner("🤖 AI is analyzing your financial data... This may take a minute."):
+                        try:
+                            config = {
+                                "base_url": "https://router.huggingface.co/v1",
+                                "api_key": st.secrets["HUGGINGFACE_API_KEY"],
+                                "model": "openai/gpt-oss-20b",
+                                "max_tokens": 8000,
+                                "timeout": 300
+                            }
+                            
+                            advisor = FinancialInsightsAdvisor(config)
+                            insights = advisor.get_financial_insights(df)
+                            st.session_state.ai_insights = insights
+                            st.session_state.ai_processing = False
+                            st.rerun()
+                        except Exception as e:
+                            st.error(f"Error generating insights: {str(e)}")
+                            st.session_state.ai_processing = False
+                else:
+                    st.info("Insights already generated. Scroll down to view them.")
+        
+        # Display loading indicator
+        if st.session_state.ai_processing:
+            st.info("AI is analyzing your financial data... Please wait.")
+            progress_bar = st.progress(0)
+            for i in range(100):
+                # Simulate progress
+                import time
+                time.sleep(0.02)
+                progress_bar.progress(i + 1)
+        
+        # Display AI insights if available
+        if st.session_state.ai_insights:
+            st.markdown("---")
+            st.markdown("<h3 class='sub-header'>📋 Your Personalized Financial Analysis</h3>", unsafe_allow_html=True)
+            
+            # Format and display insights
+            insights_text = st.session_state.ai_insights
+            
+            # Split insights into sections for better display
+            sections = re.split(r'\n#+|\n##+', insights_text)
+            
+            for section in sections:
+                if section.strip():
+                    # Check section type for styling
+                    section_lower = section.lower()
+                    if 'warning' in section_lower or 'concern' in section_lower or 'red flag' in section_lower:
+                        st.markdown(f'<div class="insight-section insight-section-warning">{section}</div>', unsafe_allow_html=True)
+                    elif 'recommendation' in section_lower or 'action' in section_lower or 'quick win' in section_lower:
+                        st.markdown(f'<div class="insight-section insight-section-success">{section}</div>', unsafe_allow_html=True)
+                    elif 'analysis' in section_lower or 'insight' in section_lower or 'observation' in section_lower:
+                        st.markdown(f'<div class="insight-section insight-section-info">{section}</div>', unsafe_allow_html=True)
+                    else:
+                        st.markdown(f'<div class="insight-section">{section}</div>', unsafe_allow_html=True)
+            
+            # Download insights button
+            insights_bytes = st.session_state.ai_insights.encode('utf-8')
+            st.download_button(
+                label="📥 Download Insights Report",
+                data=insights_bytes,
+                file_name="financial_insights_report.txt",
+                mime="text/plain"
+            )
+            
+            # Ask specific questions section
+            st.markdown("---")
+            st.markdown("<h3 class='sub-header'>💡 Ask a Specific Financial Question</h3>", unsafe_allow_html=True)
+            
+            question = st.text_input("Ask a question about your finances:", 
+                                    placeholder="e.g., 'How can I save $500 per month?' or 'What's a realistic savings goal for me?'",
+                                    key="financial_question")
+            
+            if question and st.button("Ask AI", type="secondary", key="ask_ai_button"):
+                with st.spinner("Thinking..."):
+                    try:
+                        config = {
+                            "base_url": "https://router.huggingface.co/v1",
+                            "api_key": st.secrets["HUGGINGFACE_API_KEY"],
+                            "model": "openai/gpt-oss-20b",
+                            "max_tokens": 2000,
+                            "timeout": 300
+                        }
+                        
+                        advisor = FinancialInsightsAdvisor(config)
+                        answer = advisor.ask_financial_question(df, question)
+                        
+                        st.markdown('<div class="insight-section insight-section-info">', unsafe_allow_html=True)
+                        st.markdown(f"**Question:** {question}")
+                        st.markdown("---")
+                        st.markdown(f"**Answer:**\n\n{answer}")
+                        st.markdown('</div>', unsafe_allow_html=True)
+                    except Exception as e:
+                        st.error(f"Error getting answer: {str(e)}")
+    
     # Footer
     st.markdown("---")
     st.markdown(
@@ -881,53 +1342,5 @@ if st.session_state.df_categorized is not None:
     )
 
 else:
-    # Show upload instructions
-    col1, col2 = st.columns([2, 1])
-    
-    with col1:
-        st.markdown("""
-        ## 📁 Upload Your Bank Statement
         
-        **How to use:**
-        1. Upload your bank statement PDF using the sidebar uploader
-        2. Click "Process PDF" to extract and categorize transactions
-        3. Explore your financial insights through interactive charts
-        4. Download categorized data for further analysis
-        
-        **Features:**
-        - ✅ **AI-powered PDF extraction** - Reads transaction tables from bank statements
-        - ✅ **Smart categorization** - Automatically categorizes transactions using AI
-        - ✅ **Interactive visualizations** - Explore spending patterns and trends
-        - ✅ **Export capabilities** - Download categorized data as JSON or CSV
-        
-        **Supported PDF formats:**
-        - Standard bank statement PDFs with transaction tables
-        - Most Australian and international bank formats
-        - Single or multi-page statements
-        """)
-    
-    with col2:
-        st.markdown("""
-        <div style='text-align: center; padding: 20px; background-color: #F0F9FF; border-radius: 10px; border: 2px dashed #3B82F6;'>
-            <h3>👈 Start Here</h3>
-            <p>Use the sidebar to upload your PDF</p>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        # Quick example of expected output
-        with st.expander("📋 Expected Output Format"):
-            st.code("""
-            [
-                {
-                    "date": "28 Nov 25",
-                    "description/particulars": "COCACOLA EPP MORNINGSID",
-                    "debit": "$4.60",
-                    "credit": "",
-                    "balance": "$3,214.11 CR",
-                    "category": "Food & Dining",
-                    "category_confidence": "high"
-                }
-            ]
-            """, language="json")
-    
     st.info("💡 **Note**: Processing may take 1-2 minutes depending on the size of your statement. AI models are used for both PDF extraction and categorization.")

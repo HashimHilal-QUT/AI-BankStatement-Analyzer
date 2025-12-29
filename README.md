@@ -1,5 +1,5 @@
 # 🏦 AI-Powered Bank Statement Analyzer
-https://ai-bank-app.streamlit.app
+## https://ai-bank-app.streamlit.app
 
 ## 📋 Overview
 
@@ -119,8 +119,8 @@ https://ai-bank-app.streamlit.app
 <img width="1660" height="828" alt="AI based Budget Plan" src="https://github.com/user-attachments/assets/ea7c07a3-437d-4f67-a563-70144a2defb5" />
 
 🔧 Troubleshooting
-Issue	Solution
-"PDF processing failed"	Ensure Poppler is installed and in PATH
-"API key error"	Check .streamlit/secrets.toml file
-"Slow processing"	Reduce PDF DPI or split large statements
-"No transactions found"	Ensure PDF has clear text/table format
+Issue,Solution
+"""PDF processing failed""",Ensure Poppler is installed and in PATH
+"""API key error""",Check .streamlit/secrets.toml file
+"""Slow processing""",Reduce PDF DPI or split large statements
+"""No transactions found""",Ensure PDF has clear text/table format

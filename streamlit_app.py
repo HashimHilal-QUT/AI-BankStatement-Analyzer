@@ -257,7 +257,7 @@ def process_pdf_to_dataframe(pdf_file):
             pdf_path = tmp_file.name
         
         # Initialize HuggingFace clients
-        HF_TOKEN = st.secrets["HUGGINGFACE_API_KEY"]
+        HF_TOKEN = TOKEN
         
         # Initialize Vision client for PDF processing
         vision_client = InferenceClient(model="Qwen/Qwen2.5-VL-7B-Instruct", token=HF_TOKEN)
@@ -280,7 +280,7 @@ def process_pdf_to_dataframe(pdf_file):
         # Initialize categorizer
         config = {
             "base_url": "https://router.huggingface.co/v1",
-            "api_key": st.secrets["HUGGINGFACE_API_KEY"],
+            "api_key": TOKEN,
             "model": "openai/gpt-oss-20b",
             "max_tokens": 16000,
             "timeout": 300
@@ -316,7 +316,7 @@ class HuggingFaceTransactionCategorizer:
         if config is None:
             config = {
                 "base_url": "https://router.huggingface.co/v1",
-                "api_key": st.secrets["HUGGINGFACE_API_KEY"],
+                "api_key": TOKEN,
                 "model": "openai/gpt-oss-20b",
                 "max_tokens": 16000,
                 "timeout": 300
@@ -535,7 +535,7 @@ class FinancialInsightsAdvisor:
         if config is None:
             config = {
                 "base_url": "https://router.huggingface.co/v1",
-                "api_key": st.secrets["HUGGINGFACE_API_KEY"],
+                "api_key": TOKEN,
                 "model": "openai/gpt-oss-20b",
                 "max_tokens": 8000,
                 "timeout": 300
@@ -799,7 +799,7 @@ def ask_financial_question(df_categorized: pd.DataFrame, question: str) -> str:
     """
     config = {
         "base_url": "https://router.huggingface.co/v1",
-        "api_key": st.secrets('HUGGINGFACE_API_KEY'),
+        "api_key": TOKEN,
         "model": "openai/gpt-oss-20b",
         "max_tokens": 8000,
         "timeout": 300
@@ -847,9 +847,9 @@ st.markdown("<h1 class='main-header'>🏦 Bank Statement Analyzer</h1>", unsafe_
 st.markdown("Upload your bank statement PDF and get instant financial insights with AI-powered categorization.")
 
 # API Key
-#st.markdown("---")
-#st.header("⚙️ Configuration")
-#Token = st.text_input("HuggingFace API Key / Token", type="password", help="Enter your HuggingFace Token")
+st.markdown("---")
+st.header("⚙️ Configuration")
+TOKEN = st.text_input("HuggingFace API Key / Token", type="password", help="Enter your HuggingFace Token")
 
 # File upload section
 
@@ -1240,7 +1240,7 @@ if st.session_state.df_categorized is not None:
                         try:
                             config = {
                                 "base_url": "https://router.huggingface.co/v1",
-                                "api_key": st.secrets["HUGGINGFACE_API_KEY"],
+                                "api_key": TOKEN,
                                 "model": "openai/gpt-oss-20b",
                                 "max_tokens": 8000,
                                 "timeout": 300

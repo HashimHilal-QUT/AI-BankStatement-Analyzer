@@ -842,18 +842,19 @@ Provide a detailed, actionable answer with specific recommendations and numbers:
 # STREAMLIT APP LAYOUT
 # ============================================================================
 
+# API Key
+st.sidebar.markdown("---")
+st.sidebar.header("⚙️ Configuration")
+TOKEN = st.sidebar.text_input("HuggingFace API Key / Token", type="password", help="Enter your HuggingFace Token")
+
 # Title and overview
 st.markdown("<h1 class='main-header'>🏦 Bank Statement Analyzer</h1>", unsafe_allow_html=True)
 st.markdown("Upload your bank statement PDF and get instant financial insights with AI-powered categorization.")
 
-# API Key
-st.markdown("---")
-st.header("⚙️ Configuration")
-TOKEN = st.text_input("HuggingFace API Key / Token", type="password", help="Enter your HuggingFace Token")
 
 # File upload section
 
-uploaded_pdf = st.sidebar.file_uploader(
+uploaded_pdf = st.file_uploader(
     "Upload your bank statement PDF",
     type=['pdf'],
     help="Upload a PDF bank statement to analyze your transactions"

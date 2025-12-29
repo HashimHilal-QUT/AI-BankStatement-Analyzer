@@ -634,8 +634,8 @@ else:
         "date": "01 Dec 25",
         "description/particulars": "HASHIM HILAL DECEMBER",
         "debit": "",
-        "credit": "$4,657.43",
-        "balance": "$7,625.44 CR",
+        "credit": "$5,555.55",
+        "balance": "$10,000.00 CR",
         "category": "Income & Salary",
         "category_confidence": "high"
     }

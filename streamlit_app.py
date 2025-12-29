@@ -13,7 +13,7 @@ import io
 
 # Set page configuration
 st.set_page_config(
-    page_title="Financial Transaction Dashboard",
+    page_title="AI Analyzer - Bank Statement",
     page_icon="💰",
     layout="wide",
     initial_sidebar_state="expanded"

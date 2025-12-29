@@ -113,7 +113,7 @@ def process_data(df):
     return df
 
 # Title and overview
-st.markdown("<h1 class='main-header'>💰 Financial Transaction Dashboard</h1>", unsafe_allow_html=True)
+st.markdown("<h1 class='main-header'>💰 AI Analyzer - Bank Statement</h1>", unsafe_allow_html=True)
 
 # Sidebar for file upload and filters
 st.sidebar.header("📁 Data Upload")

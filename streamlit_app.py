@@ -68,8 +68,9 @@ def load_data():
     df['day'] = df['date'].dt.day
     
     # Convert debit and credit to numeric values
-    df['debit'] = df['debit'].replace('[\$,]', '', regex=True).replace('', '0').astype(float)
-    df['credit'] = df['credit'].replace('[\$,]', '', regex=True).replace('', '0').astype(float)
+    # Use raw strings for regex to avoid escape sequence warnings
+    df['debit'] = df['debit'].replace(r'[\$,]', '', regex=True).replace('', '0').astype(float)
+    df['credit'] = df['credit'].replace(r'[\$,]', '', regex=True).replace('', '0').astype(float)
     
     # Create a unified amount column (positive for credits, negative for debits)
     df['amount'] = df['credit'] - df['debit']
@@ -81,7 +82,7 @@ def load_data():
     )
     
     # Clean balance column
-    df['balance'] = df['balance'].replace('[\$, CR]', '', regex=True).astype(float)
+    df['balance'] = df['balance'].replace(r'[\$, CR]', '', regex=True).astype(float)
     
     return df
 
@@ -188,7 +189,7 @@ with tab1:
         yaxis_title="Balance ($)",
         hovermode='x unified'
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, use_container_width=True, width='stretch')
     
     # Daily transaction volume
     daily_counts = filtered_df.groupby(filtered_df['date'].dt.date).size().reset_index()
@@ -206,7 +207,7 @@ with tab1:
         xaxis_title="Date",
         yaxis_title="Number of Transactions"
     )
-    st.plotly_chart(fig2, use_container_width=True)
+    st.plotly_chart(fig2, use_container_width=True, width='stretch')
 
 with tab2:
     st.markdown("<h3 class='sub-header'>Spending Analysis</h3>", unsafe_allow_html=True)
@@ -215,7 +216,7 @@ with tab2:
     
     with col1:
         # Top spending categories
-        category_spending = filtered_df[filtered_df['debit'] > 0].groupby('category')['debit'].sum().reset_index()
+        category_spending = filtered_df[filtered_df['debit'] > 0].groupby('category', observed=True)['debit'].sum().reset_index()
         category_spending = category_spending.sort_values('debit', ascending=False)
         
         fig = px.pie(
@@ -225,7 +226,7 @@ with tab2:
             title='Spending by Category',
             hole=0.4
         )
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True, width='stretch')
     
     with col2:
         # Top transactions by amount
@@ -246,12 +247,12 @@ with tab2:
             yaxis={'categoryorder': 'total ascending'}
         )
         fig.update_traces(texttemplate='$%{text:.2f}', textposition='outside')
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True, width='stretch')
     
     # Monthly spending trend
     monthly_spending = filtered_df[filtered_df['debit'] > 0].copy()
     monthly_spending['month_year'] = monthly_spending['date'].dt.strftime('%b %Y')
-    monthly_totals = monthly_spending.groupby('month_year')['debit'].sum().reset_index()
+    monthly_totals = monthly_spending.groupby('month_year', observed=True)['debit'].sum().reset_index()
     
     # Sort by date properly
     monthly_totals['sort_date'] = pd.to_datetime(monthly_totals['month_year'], format='%b %Y')
@@ -269,7 +270,7 @@ with tab2:
         yaxis_title="Total Spending ($)",
         hovermode='x unified'
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, use_container_width=True, width='stretch')
 
 with tab3:
     st.markdown("<h3 class='sub-header'>Time-Based Analysis</h3>", unsafe_allow_html=True)
@@ -281,7 +282,7 @@ with tab3:
         day_order = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
         day_spending = filtered_df[filtered_df['debit'] > 0].copy()
         day_spending['day_of_week'] = pd.Categorical(day_spending['day_of_week'], categories=day_order, ordered=True)
-        day_totals = day_spending.groupby('day_of_week')['debit'].sum().reset_index()
+        day_totals = day_spending.groupby('day_of_week', observed=True)['debit'].sum().reset_index()
         
         fig = px.bar(
             day_totals,
@@ -295,12 +296,12 @@ with tab3:
             xaxis_title="Day of Week",
             yaxis_title="Total Spending ($)"
         )
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True, width='stretch')
     
     with col2:
         # Spending by day of month
         day_of_month_spending = filtered_df[filtered_df['debit'] > 0].copy()
-        day_of_month_totals = day_of_month_spending.groupby('day')['debit'].sum().reset_index()
+        day_of_month_totals = day_of_month_spending.groupby('day', observed=True)['debit'].sum().reset_index()
         
         fig = px.line(
             day_of_month_totals,
@@ -314,7 +315,7 @@ with tab3:
             yaxis_title="Total Spending ($)",
             hovermode='x unified'
         )
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True, width='stretch')
     
     # Heatmap of spending by category and day of week
     heatmap_data = filtered_df[filtered_df['debit'] > 0].copy()
@@ -336,7 +337,7 @@ with tab3:
         labels=dict(x="Day of Week", y="Category", color="Spending ($)")
     )
     fig.update_layout(height=500)
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, use_container_width=True, width='stretch')
 
 with tab4:
     st.markdown("<h3 class='sub-header'>Category Analysis</h3>", unsafe_allow_html=True)
@@ -364,7 +365,7 @@ with tab4:
             xaxis_title="Date",
             yaxis_title="Number of Transactions"
         )
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True, width='stretch')
     
     with col2:
         # Category amount distribution
@@ -378,7 +379,7 @@ with tab4:
             fig.update_layout(
                 yaxis_title="Amount ($)"
             )
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, use_container_width=True, width='stretch')
     
     # Confidence level distribution for selected category
     if len(category_data) > 0:
@@ -394,7 +395,7 @@ with tab4:
             color='confidence',
             color_discrete_map={'high': '#10B981', 'medium': '#F59E0B', 'low': '#EF4444'}
         )
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True, width='stretch')
 
 with tab5:
     st.markdown("<h3 class='sub-header'>Transaction Details</h3>", unsafe_allow_html=True)

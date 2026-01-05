@@ -120,6 +120,11 @@
 <img width="1900" height="1000" alt="AI Based Insights and Recommendations" src="https://github.com/user-attachments/assets/b7130c64-f92a-4e1b-a441-f48f20effd91" />
 <img width="1900" height="1000" alt="AI based Budget Plan" src="https://github.com/user-attachments/assets/ea7c07a3-437d-4f67-a563-70144a2defb5" />
 
+### 🎥 Demo Video
+
+https://github.com/user-attachments/assets/5eaa119f-9ecb-4a18-95fd-d9cd4d7f58f2
+
+
 ## 🔧 Troubleshooting
 
 | Issue | Solution |

@@ -28,7 +28,7 @@
 - **Budget Recommendations**: Actionable advice based on your spending patterns
 - **Savings Goals**: Realistic targets and strategies to improve savings
 - **Quick Wins**: Immediate actions you can take to optimize finances
-- **Q&A Feature**: Ask specific financial questions about your data
+
 
 ### 📁 **Data Management**
 - **Flexible Export**: Download categorized data as JSON or CSV
